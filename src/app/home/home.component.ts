@@ -16,4 +16,8 @@ export class HomeComponent implements OnInit {
   navigateToLogin(): void {
     this.router.navigate(['login']);
   }
+
+  navigateToCreateAccount(): void {
+    this.router.navigate(['create-account']);
+  }
 }

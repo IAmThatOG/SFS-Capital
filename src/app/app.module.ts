@@ -4,22 +4,25 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
+import { CreateAccountComponent } from './create-account/create-account.component';
+import { HomeModule } from './home/home.module';
+import { CreateAccountModule } from './create-account/create-account.module';
+import { LoginModule } from './login/login.module';
 
 const routes: Routes = [
-  {path: 'home', component: HomeComponent},
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
   { path: '**', redirectTo: 'home', pathMatch: 'full' }
 ];
 @NgModule({
   declarations: [
-    AppComponent,
-    LoginComponent,
-    HomeComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    HomeModule,
+    CreateAccountModule,
+    LoginModule
   ],
   exports: [
     RouterModule

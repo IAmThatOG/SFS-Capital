@@ -12,4 +12,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
   }
+
+  navigateToCreateAccount(): void {
+    this.router.navigate(['create-account']);
+  }
 }
