@@ -79,7 +79,7 @@
       <div class="login_mini_nav">
         <div>
           <p>
-            Don’t have an account?
+            Have an account?
           </p>
         </div>
         <div>
@@ -117,38 +117,98 @@
 
               <div class="input_div">
                 <span class="formLabel"> First Name </span>
-                <input type="text" id="" placeholder="First Name" formControlName="firstname">
-                <span *ngIf="signupForm.get('firstname').touched && signupForm.get('firstname').errors">
-                  <ul *ngFor="let error of signupForm.get('firstname').errors">
-                    <li
+                <input type="text" id="" placeholder="First Name" formControlName="firstName">
+                <span *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)">
+                  <ul>
+                    <li *ngIf="firstName.errors.required" class="text-danger">
+                      Please enter your firstname
+                    </li>
+                    <li *ngIf="firstName.errors.minlength" class="text-danger">
+                      Firstname can not be less than two characters
+                    </li>
                   </ul>
-                  <p *ngIf="signupForm.get('firstname').errors?.required" class="text-danger">Please enter your firstname</p>
+                </span>
+              </div>
+
+              <div class=" input_div">
+                <span class="formLabel"> Last Name </span>
+                <input type="text" id="" placeholder="Last Name" formControlName="lastName">
+                <span *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)">
+                  <ul>
+                    <li *ngIf="lastName.errors.required" class="text-danger">
+                      Please enter your lastname
+                    </li>
+                    <li *ngIf="lastName.errors.minlength" class="text-danger">
+                      Lastname can not be less than two characters
+                    </li>
+                  </ul>
                 </span>
               </div>
 
               <div class="input_div">
-                <span class="formLabel"> Last Name </span>
-                <input type="text" id="" placeholder="Last Name" formControlName="lastname">
-              </div>
-
-              <div class="input_div">
                 <span class="formLabel"> Phone </span>
-                <input type="text" id="" placeholder="+2340000000000" formControlName="phoneNumber">
+                <input type="text" id="" placeholder="+2340000000000" formControlName="phoneNumber" maxLength="14">
+                <span *ngIf="phoneNumber.invalid && (phoneNumber.dirty || phoneNumber.touched)">
+                  <ul>
+                    <li *ngIf="phoneNumber.errors.required" class="text-danger">
+                      Please enter your phone number in the format specified
+                    </li>
+                    <li *ngIf="phoneNumber.errors.minlength" class="text-danger">
+                      Phone number can not be less than 14 characters
+                    </li>
+                    <li *ngIf="phoneNumber.errors.maxlength" class="text-danger">
+                      Phone number can not be more than 14 digits
+                    </li>
+                    <li *ngIf="phoneNumber.errors.pattern" class="text-danger">
+                      Invalid phone number
+                    </li>
+                  </ul>
+                </span>
               </div>
 
               <div class="input_div">
                 <span class="formLabel"> Email </span>
                 <input type="email" id="" placeholder="Email Address" formControlName="email">
+                <span *ngIf="email.invalid && (email.dirty || email.touched)">
+                  <ul>
+                    <li *ngIf="email.errors.required" class="text-danger">
+                      Please enter your email
+                    </li>
+                    <li *ngIf="email.errors.email" class="text-danger">
+                      invalid email
+                    </li>
+                  </ul>
+                </span>
               </div>
 
               <div class="input_div">
                 <span class="formLabel"> Password </span>
                 <input type="password" id="" placeholder="Password" formControlName="password">
+                <span *ngIf="password.invalid && (password.dirty || password.touched)">
+                  <ul>
+                    <li *ngIf="password.errors.required" class="text-danger">
+                      Please enter a password
+                    </li>
+                    <li *ngIf="password.errors.minlength" class="text-danger">
+                      Password can not be less than 6 characters
+                    </li>
+                  </ul>
+                </span>
               </div>
 
               <div class="input_div">
                 <span class="formLabel"> Confirm Password </span>
-                <input type="password" id="" placeholder="Confirm Password" formControlName="confirmPassword">
+                <input type="password" id="" placeholder="Confirm Password" formControlName="comparePassword">
+                <span *ngIf="comparePassword.invalid && (comparePassword.dirty || comparePassword.touched)">
+                  <ul>
+                    <li *ngIf="comparePassword.errors.required" class="text-danger">
+                      Please confirm your password
+                    </li>
+                    <li *ngIf="comparePassword.errors.compare" class="text-danger">
+                      Passwords must match
+                    </li>
+                  </ul>
+                </span>
               </div>
 
               <!-- <div class="btn_full_width green_btn">
@@ -164,14 +224,17 @@
                 </div>
 
                 <div class="forButton">
-                  <button class="btn btn1" type="submit" [disabled]="!signupForm.valid" href="#">Signup</button>
+                  <button type="submit" [disabled]="!signupForm.valid">Signup</button>
                 </div>
               </div>
 
-
-
             </form>
           </div>
+          <!-- {{confirmPassword.errors['compare']}} -->
+          <!-- <br>Dirty: {{signupForm.dirty}}
+          <br>Touched: {{signupForm.touched}}
+          <br>Valid: {{signupForm.valid}}
+          <br>Value: {{signupForm.value | json}} -->
           <!--  -->
 
         </div>
