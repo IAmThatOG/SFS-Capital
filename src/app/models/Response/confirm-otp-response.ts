@@ -1,6 +1,6 @@
 import { UserData } from '../user-data';
 
-export interface ConfirmOtpResponse {
+export interface AuthResponse {
     data: UserData;
     status: boolean;
     message: string;

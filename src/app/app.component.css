@@ -2355,9 +2355,14 @@ button:focus {
 button:hover {
   cursor: pointer;
 }
+
 div.forButton button {
   padding: 11px 75px;
   background-color: #ffd873;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
   border-radius: 2px;
+}
+
+.text-danger {
+  color: red;
 }

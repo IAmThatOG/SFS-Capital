@@ -4,7 +4,7 @@ import { LocalStorageKeys } from '../shared/local-storage-keys.enum';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ConfirmOtpRequest } from '../models/Request/confirm-otp-request';
 import { AuthService } from '../services/auth.service';
-import { ConfirmOtpResponse } from '../models/Response/confirm-otp-response';
+import { AuthResponse } from '../models/Response/confirm-otp-response';
 
 @Component({
   selector: 'app-confirm-otp',
@@ -48,10 +48,11 @@ export class ConfirmOtpComponent implements OnInit {
     };
     this.authService.confirmOtp(request)
       .subscribe(
-        (value: ConfirmOtpResponse) => {
+        (value: AuthResponse) => {
           console.log(value);
-          if (value.data.isVerified) {
-            //redirect to dashboard
+          if (value.data && value.data.isVerified) {
+            // redirect to dashboard
+            localStorage.setItem(LocalStorageKeys.USER_DATA, JSON.stringify(value.data));
             this.authService.userData = value.data;
             this.navigateToDashboard();
           }
