@@ -4,6 +4,7 @@ import { CreateAccountComponent } from './create-account.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { Routes, RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 const routes: Routes = [
   {path: 'create-account', component: CreateAccountComponent}
@@ -17,7 +18,8 @@ const routes: Routes = [
     CommonModule,
     BrowserModule,
     RouterModule.forChild(routes),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule
   ]
 })
 export class CreateAccountModule { }

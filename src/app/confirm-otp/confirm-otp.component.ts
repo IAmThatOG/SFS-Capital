@@ -5,6 +5,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { ConfirmOtpRequest } from '../models/Request/confirm-otp-request';
 import { AuthService } from '../services/auth.service';
 import { AuthResponse } from '../models/Response/confirm-otp-response';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-confirm-otp',
@@ -48,12 +49,13 @@ export class ConfirmOtpComponent implements OnInit {
     };
     this.authService.confirmOtp(request)
       .subscribe(
-        (value: AuthResponse) => {
+        (value: HttpResponse<AuthResponse>) => {
           console.log(value);
-          if (value.data && value.data.isVerified) {
+          if (value.body.data && value.body.data.isVerified) {
             // redirect to dashboard
-            localStorage.setItem(LocalStorageKeys.USER_DATA, JSON.stringify(value.data));
-            this.authService.userData = value.data;
+            localStorage.setItem(LocalStorageKeys.USER_DATA, JSON.stringify(value.body.data));
+            localStorage.setItem(LocalStorageKeys.AUTH_TOKEN, value.headers.get(LocalStorageKeys.AUTH_TOKEN));
+            this.authService.userData = value.body.data;
             this.navigateToDashboard();
           }
         },

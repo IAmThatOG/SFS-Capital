@@ -1,7 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {HttpClientModule} from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { AppComponent } from './app.component';
 import { HomeModule } from './home/home.module';
 import { CreateAccountModule } from './create-account/create-account.module';
@@ -25,6 +28,7 @@ const routes: Routes = [
     BrowserModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
+    NgbModule,
     HomeModule,
     CreateAccountModule,
     LoginModule,
@@ -33,7 +37,7 @@ const routes: Routes = [
     DashboardModule
   ],
   exports: [
-    RouterModule
+    RouterModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

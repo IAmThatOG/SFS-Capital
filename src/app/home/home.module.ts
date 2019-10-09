@@ -16,6 +16,6 @@ const routes: Routes = [
     CommonModule,
     BrowserModule,
     RouterModule.forChild(routes)
-  ]
+  ],
 })
 export class HomeModule { }

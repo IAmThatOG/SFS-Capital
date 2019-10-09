@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { SignUpRequest } from '../models/Request/sign-up-request';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { SignUpResponse } from '../models/Response/sign-up-response';
@@ -19,11 +19,9 @@ export class AuthService {
 
   private _userData: UserData;
 
-  private httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    }),
-  };
+  private headers = new HttpHeaders({
+    'Content-Type': 'application/json'
+  });
 
   constructor(private httpClient: HttpClient) { }
 
@@ -35,27 +33,36 @@ export class AuthService {
     this._userData = v;
   }
 
-  createAccount(signUpReq: SignUpRequest): Observable<SignUpResponse> {
+  createAccount(signUpReq: SignUpRequest): Observable<HttpResponse<SignUpResponse>> {
     return this.httpClient.post<SignUpResponse>(
       `${Utils.apiBaseUrl}api/Customer/create`,
       signUpReq,
-      this.httpOptions
+      {
+        headers: this.headers,
+        observe: 'response'
+      }
     );
   }
 
-  confirmOtp(request: ConfirmOtpRequest): Observable<AuthResponse> {
+  confirmOtp(request: ConfirmOtpRequest): Observable<HttpResponse<AuthResponse>> {
     return this.httpClient.post<AuthResponse>(
       `${Utils.apiBaseUrl}api/Customer/verify`,
       request,
-      this.httpOptions
+      {
+        headers: this.headers,
+        observe: 'response'
+      }
     );
   }
 
-  login(request: LoginRequest): Observable<AuthResponse> {
+  login(request: LoginRequest): Observable<HttpResponse<AuthResponse>> {
     return this.httpClient.post<AuthResponse>(
       `${Utils.apiBaseUrl}api/Customer/login`,
       request,
-      this.httpOptions
+      {
+        headers: this.headers,
+        observe: 'response'
+      }
     );
-  };
+  }
 }

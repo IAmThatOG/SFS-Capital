@@ -2,9 +2,11 @@ import { ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
 import { ApiEndpointKeys } from './api-endpoint-keys.enum';
+import { AlertMsg, AlertType } from '../services/alert-msg.service';
 
 export class Utils {
   static apiBaseUrl = 'http://sfs-digital.herokuapp.com/';
+  static httpErrorMsg = 'Something went wrong...please try again';
   urlmap: Map<ApiEndpointKeys, string> = new Map();
 
   static compareValidator(controlName: string): ValidatorFn {
@@ -31,4 +33,10 @@ export class Utils {
     }
   }
 
+  static handleHttpError(): AlertMsg {
+    return {
+      message: 'Something went wrong...please retry.',
+      type: AlertType.DANGER
+    };
+  }
 }

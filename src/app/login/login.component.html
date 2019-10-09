@@ -113,7 +113,8 @@
 
           <div class="login_inputs">
             <form novalidate [formGroup]="loginForm" (ngSubmit)="submitLoginForm()">
-
+              <!-- <app-alert-msg *ngIf="showAlert" title="{{alertTitle}}" [message]="alertMsg" type="{alertType}"></app-alert-msg> -->
+              <ngb-alert *ngIf="alert.msg" [type]="alert.type" (close)="alert.msg = null">{{alert.msg}}</ngb-alert>
               <div class="input_div">
                 <span class="formLabel"> Username </span>
                 <input type="text" id="" placeholder="Username" formControlName="userName">
@@ -146,7 +147,7 @@
 
               <div class="btn_below_link">
                 <div class="forButton">
-                  <button type="submit" [disabled]="!loginForm.valid">Login</button>
+                  <button type="button" (click)="submitLoginForm()" [disabled]="!loginForm.valid">Login</button>
                 </div>
                 <div class="forLink">
                   <a href="#">Forgot Password?</a>

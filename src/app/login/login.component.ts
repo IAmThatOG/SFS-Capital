@@ -5,6 +5,9 @@ import { LoginRequest } from '../models/Request/login-request';
 import { AuthService } from '../services/auth.service';
 import { AuthResponse } from '../models/Response/confirm-otp-response';
 import { LocalStorageKeys } from '../shared/local-storage-keys.enum';
+import { HttpResponse } from '@angular/common/http';
+import { AlertMsgService, AlertMsg, AlertType } from '../services/alert-msg.service';
+import { Utils } from '../shared/utils';
 
 @Component({
   selector: 'app-login',
@@ -13,17 +16,27 @@ import { LocalStorageKeys } from '../shared/local-storage-keys.enum';
 })
 export class LoginComponent implements OnInit {
 
+  // public alertMsg: AlertMsg;
+
   private _loginForm: FormGroup;
   constructor(private router: Router,
     private formBuilder: FormBuilder,
-    private authService: AuthService) { }
+    private authService: AuthService,
+    private _alert: AlertMsgService) { }
 
   ngOnInit() {
+    this.alert.configure();
     this.loginForm = this.formBuilder.group({
       userName: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
   }
+
+
+  public get alert(): AlertMsgService {
+    return this._alert;
+  }
+
 
   navigateToCreateAccount(): void {
     this.router.navigate(['create-account']);
@@ -52,14 +65,20 @@ export class LoginComponent implements OnInit {
   submitLoginForm(): void {
     const loginReq: LoginRequest = this.loginForm.value;
     this.authService.login(loginReq)
-      .subscribe((value: AuthResponse) => {
-        if (value.data && value.data.isVerified) {
+      .subscribe((value: HttpResponse<AuthResponse>) => {
+        if (value.body.data && value.body.data.isVerified) {
           // redirect to dashboard
           console.log(value);
-          localStorage.setItem(LocalStorageKeys.USER_DATA, JSON.stringify(value.data));
-          this.authService.userData = value.data;
+          localStorage.setItem(LocalStorageKeys.USER_DATA, JSON.stringify(value.body.data));
+          localStorage.setItem(LocalStorageKeys.AUTH_TOKEN, value.headers.get(LocalStorageKeys.AUTH_TOKEN));
+          this.authService.userData = value.body.data;
           this.navigateToDashboard();
+        } else {
+          this.alert.show(AlertType.DANGER, value.body.message);
         }
-      });
+      },
+        (error: any) => {
+          this.alert.show(AlertType.DANGER, Utils.httpErrorMsg);
+        });
   }
 }

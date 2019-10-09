@@ -115,6 +115,8 @@
           <div class="login_inputs">
             <form novalidate (ngSubmit)="submitSignUpForm()" [formGroup]="signupForm">
 
+              <ngb-alert *ngIf="alert.msg" [type]="alert.type" (close)="alert.msg = null">{{alert.msg}}</ngb-alert>
+
               <div class="input_div">
                 <span class="formLabel"> First Name </span>
                 <input type="text" id="" placeholder="First Name" formControlName="firstName">

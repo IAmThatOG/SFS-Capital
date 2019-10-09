@@ -5,6 +5,8 @@ import { Utils } from '../shared/utils';
 import { AuthService } from '../services/auth.service';
 import { SignUpResponse } from '../models/Response/sign-up-response';
 import { LocalStorageKeys } from '../shared/local-storage-keys.enum';
+import { HttpResponse } from '@angular/common/http';
+import { AlertMsgService, AlertType } from '../services/alert-msg.service';
 
 // validator function
 // function mustMatch(controlName: string, matchingControlName: string): ValidatorFn {
@@ -38,7 +40,8 @@ export class CreateAccountComponent implements OnInit {
 
   constructor(private router: Router,
     private formBuilder: FormBuilder,
-    private authService: AuthService) { }
+    private authService: AuthService,
+    private _alert: AlertMsgService) { }
 
   ngOnInit() {
     this.signupForm = this.formBuilder.group(
@@ -97,6 +100,10 @@ export class CreateAccountComponent implements OnInit {
     return this.signupForm.get('comparePassword');
   }
 
+  get alert(): AlertMsgService {
+    return this._alert;
+  }
+
   navigateToConfirmOtp(): void {
     this.router.navigate(['confirm-otp']);
   }
@@ -107,9 +114,9 @@ export class CreateAccountComponent implements OnInit {
     let result: SignUpResponse;
     this.authService.createAccount(this.signupForm.value)
       .subscribe(
-        (response: SignUpResponse) => {
-          console.log(response.message);
-          result = response;
+        (response: HttpResponse<SignUpResponse>) => {
+          console.log(response.body.message);
+          result = response.body;
           console.log(JSON.stringify(result));
           if (result && result.status) {
             // redirect to otp page
@@ -118,9 +125,11 @@ export class CreateAccountComponent implements OnInit {
             localStorage.setItem(LocalStorageKeys.OTP_REF, otp);
             localStorage.setItem(LocalStorageKeys.PHONE_NUMBER, this.phoneNumber.value);
             this.navigateToConfirmOtp();
+          } else {
+            this._alert.show(AlertType.DANGER, result.message);
           }
         },
-        (error: any) => console.log(error)
+        (error: any) => this._alert.show(AlertType.DANGER, Utils.httpErrorMsg)
       );
   }
 }

@@ -4,6 +4,8 @@ import { LoginComponent } from './login.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { Routes, RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+// import { AlertMessageModule } from '../alert-message/alert-message.module';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent }
@@ -17,7 +19,8 @@ const routes: Routes = [
     CommonModule,
     BrowserModule,
     RouterModule.forChild(routes),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule
   ]
 })
 export class LoginModule { }
