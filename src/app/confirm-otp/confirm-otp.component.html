@@ -112,6 +112,8 @@
           <div class="login_inputs">
             <form novalidate (ngSubmit)="confirmOtp()" [formGroup]="confirmOtpForm">
 
+              <ngb-alert *ngIf="alert.msg" [type]="alert.type" (close)="alert.msg = null">{{alert.msg}}</ngb-alert>
+
               <div class="input_div">
                 <span class="formLabel"> Enter Code </span>
                 <input type="text" id="" placeholder="Enter Code" formControlName="otp">

@@ -9,6 +9,9 @@ import { Utils } from '../shared/utils';
 import { ApiEndpointKeys } from '../shared/api-endpoint-keys.enum';
 import { UserData } from '../models/user-data';
 import { LoginRequest } from '../models/Request/login-request';
+import { ResendOtpRequest } from '../models/Request/resend-otp-request';
+import { ResendOtpResponse } from '../models/Response/resend-otp-response';
+import { utils } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +41,7 @@ export class AuthService {
       `${Utils.apiBaseUrl}api/Customer/create`,
       signUpReq,
       {
-        headers: this.headers,
+        headers: Utils.setRequestHeader(),
         observe: 'response'
       }
     );
@@ -49,7 +52,7 @@ export class AuthService {
       `${Utils.apiBaseUrl}api/Customer/verify`,
       request,
       {
-        headers: this.headers,
+        headers: Utils.setRequestHeader(),
         observe: 'response'
       }
     );
@@ -60,7 +63,18 @@ export class AuthService {
       `${Utils.apiBaseUrl}api/Customer/login`,
       request,
       {
-        headers: this.headers,
+        headers: Utils.setRequestHeader(),
+        observe: 'response'
+      }
+    );
+  }
+
+  resendOtp(request: ResendOtpRequest, authToken: string): Observable<HttpResponse<SignUpResponse>> {
+    return this.httpClient.post<SignUpResponse>(
+      `${Utils.apiBaseUrl}api/Customer/resendtoken`,
+      request,
+      {
+        headers: Utils.setRequestHeader(authToken),
         observe: 'response'
       }
     );

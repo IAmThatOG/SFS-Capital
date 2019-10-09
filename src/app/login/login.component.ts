@@ -5,9 +5,13 @@ import { LoginRequest } from '../models/Request/login-request';
 import { AuthService } from '../services/auth.service';
 import { AuthResponse } from '../models/Response/confirm-otp-response';
 import { LocalStorageKeys } from '../shared/local-storage-keys.enum';
-import { HttpResponse } from '@angular/common/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { AlertMsgService, AlertMsg, AlertType } from '../services/alert-msg.service';
 import { Utils } from '../shared/utils';
+import { ResendOtpRequest } from '../models/Request/resend-otp-request';
+import { ResendOtpResponse } from '../models/Response/resend-otp-response';
+import { SignUpResponse } from '../models/Response/sign-up-response';
+import { ErrorResponse } from '../models/Response/error-response';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +25,7 @@ export class LoginComponent implements OnInit {
   private _loginForm: FormGroup;
   constructor(private router: Router,
     private formBuilder: FormBuilder,
-    private authService: AuthService,
+    private _authService: AuthService,
     private _alert: AlertMsgService) { }
 
   ngOnInit() {
@@ -32,14 +36,8 @@ export class LoginComponent implements OnInit {
     });
   }
 
-
   public get alert(): AlertMsgService {
     return this._alert;
-  }
-
-
-  navigateToCreateAccount(): void {
-    this.router.navigate(['create-account']);
   }
 
   public get loginForm(): FormGroup {
@@ -62,23 +60,68 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['dashboard']);
   }
 
+  navigateToCreateAccount(): void {
+    this.router.navigate(['create-account']);
+  }
+
+  navigateToConfirmOtp(): void {
+    this.router.navigate(['confirm-otp']);
+  }
+
+  handleResendOtpLogic(email: string, phoneNumber: string): void {
+    const resendOtpReq: ResendOtpRequest = {
+      email,
+      phoneNumber
+    };
+    const authToken = localStorage.getItem(LocalStorageKeys.AUTH_TOKEN);
+    this._authService.resendOtp(resendOtpReq, authToken)
+      .subscribe(
+        (value: HttpResponse<SignUpResponse>) => {
+          if (value.body && value.body.data.otpRef) {
+            sessionStorage.setItem(LocalStorageKeys.OTP_REF, value.body.data.otpRef);
+            sessionStorage.setItem(LocalStorageKeys.PHONE_NUMBER, phoneNumber);
+            this.alert.msg = value.body.message + '...Please check your email';
+            this.alert.type = AlertType.SUCCESS;
+            this.navigateToConfirmOtp();
+          }
+        },
+        (error: HttpErrorResponse) => {
+          this.alert.type = AlertType.DANGER;
+          this.alert.msg = Utils.handleError(error);
+          this.alert.show();
+        }
+      );
+  }
+
   submitLoginForm(): void {
     const loginReq: LoginRequest = this.loginForm.value;
-    this.authService.login(loginReq)
-      .subscribe((value: HttpResponse<AuthResponse>) => {
-        if (value.body.data && value.body.data.isVerified) {
-          // redirect to dashboard
-          console.log(value);
-          localStorage.setItem(LocalStorageKeys.USER_DATA, JSON.stringify(value.body.data));
-          localStorage.setItem(LocalStorageKeys.AUTH_TOKEN, value.headers.get(LocalStorageKeys.AUTH_TOKEN));
-          this.authService.userData = value.body.data;
-          this.navigateToDashboard();
-        } else {
-          this.alert.show(AlertType.DANGER, value.body.message);
+    this._authService.login(loginReq)
+      .subscribe(
+        (value: HttpResponse<AuthResponse>) => {
+          if (value.body.data) {
+            // redirect to dashboard
+            console.log(value);
+            localStorage.setItem(LocalStorageKeys.USER_DATA, JSON.stringify(value.body.data));
+            localStorage.setItem(LocalStorageKeys.AUTH_TOKEN, value.headers.get(LocalStorageKeys.AUTH_TOKEN));
+            this._authService.userData = value.body.data;
+            if (value.body.data.isVerified) {
+              this.navigateToDashboard();
+            } else {
+              this.handleResendOtpLogic(value.body.data.email, value.body.data.phoneNumber);
+            }
+          } else {
+            this.alert.msg = value.body.message;
+            this.alert.type = AlertType.DANGER;
+            this.alert.show();
+          }
+        },
+        (errorRes: HttpErrorResponse) => {
+          this.alert.msg = Utils.handleError(errorRes);
+          this.alert.type = AlertType.DANGER;
+          this.alert.show();
+          console.log(errorRes);
+          // this.alert.show(AlertType.DANGER, Utils.httpErrorMsg);
         }
-      },
-        (error: any) => {
-          this.alert.show(AlertType.DANGER, Utils.httpErrorMsg);
-        });
+      );
   }
 }

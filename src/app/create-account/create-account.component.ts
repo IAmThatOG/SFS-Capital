@@ -5,7 +5,7 @@ import { Utils } from '../shared/utils';
 import { AuthService } from '../services/auth.service';
 import { SignUpResponse } from '../models/Response/sign-up-response';
 import { LocalStorageKeys } from '../shared/local-storage-keys.enum';
-import { HttpResponse } from '@angular/common/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { AlertMsgService, AlertType } from '../services/alert-msg.service';
 
 // validator function
@@ -115,21 +115,29 @@ export class CreateAccountComponent implements OnInit {
     this.authService.createAccount(this.signupForm.value)
       .subscribe(
         (response: HttpResponse<SignUpResponse>) => {
-          console.log(response.body.message);
+          console.log(response);
           result = response.body;
           console.log(JSON.stringify(result));
           if (result && result.status) {
             // redirect to otp page
             const otp: string = result.data.otpRef;
             console.log(`OTP => ${otp}`);
-            localStorage.setItem(LocalStorageKeys.OTP_REF, otp);
-            localStorage.setItem(LocalStorageKeys.PHONE_NUMBER, this.phoneNumber.value);
+            sessionStorage.setItem(LocalStorageKeys.OTP_REF, otp);
+            sessionStorage.setItem(LocalStorageKeys.PHONE_NUMBER, this.phoneNumber.value);
             this.navigateToConfirmOtp();
           } else {
-            this._alert.show(AlertType.DANGER, result.message);
+            this.alert.msg = result.message;
+            this.alert.type = AlertType.DANGER;
+            this._alert.show();
           }
         },
-        (error: any) => this._alert.show(AlertType.DANGER, Utils.httpErrorMsg)
+        (error: HttpErrorResponse) => {
+          this.alert.type = AlertType.DANGER;
+          this.alert.msg = Utils.handleError(error);
+          this.alert.show();
+          console.log(error);
+          // this._alert.show(AlertType.DANGER, Utils.httpErrorMsg);
+        }
       );
   }
 }

@@ -5,7 +5,9 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { ConfirmOtpRequest } from '../models/Request/confirm-otp-request';
 import { AuthService } from '../services/auth.service';
 import { AuthResponse } from '../models/Response/confirm-otp-response';
-import { HttpResponse } from '@angular/common/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { AlertMsgService, AlertType } from '../services/alert-msg.service';
+import { Utils } from '../shared/utils';
 
 @Component({
   selector: 'app-confirm-otp',
@@ -17,14 +19,20 @@ export class ConfirmOtpComponent implements OnInit {
   confirmOtpForm: FormGroup;
 
   constructor(private router: Router,
-    private formBuilder: FormBuilder,
-    private authService: AuthService) { }
+              private formBuilder: FormBuilder,
+              private authService: AuthService,
+              private readonly _alert: AlertMsgService) { }
 
   ngOnInit() {
+    this.alert.show();
     this.confirmOtpForm = this.formBuilder.group(
       {
         otp: ['', [Validators.required, Validators.pattern('^[0-9]*$')]]
       });
+  }
+
+  public get alert(): AlertMsgService {
+    return this._alert;
   }
 
   public get otp(): AbstractControl {
@@ -40,8 +48,8 @@ export class ConfirmOtpComponent implements OnInit {
   }
 
   confirmOtp(): void {
-    const cachedPhoneNumber = localStorage.getItem(LocalStorageKeys.PHONE_NUMBER);
-    const cachedOtpRef = localStorage.getItem(LocalStorageKeys.OTP_REF);
+    const cachedPhoneNumber = sessionStorage.getItem(LocalStorageKeys.PHONE_NUMBER);
+    const cachedOtpRef = sessionStorage.getItem(LocalStorageKeys.OTP_REF);
     const request: ConfirmOtpRequest = {
       otp: this.otp.value,
       otpRef: +cachedOtpRef,
@@ -51,15 +59,31 @@ export class ConfirmOtpComponent implements OnInit {
       .subscribe(
         (value: HttpResponse<AuthResponse>) => {
           console.log(value);
-          if (value.body.data && value.body.data.isVerified) {
+          if (value.body.data) {
             // redirect to dashboard
             localStorage.setItem(LocalStorageKeys.USER_DATA, JSON.stringify(value.body.data));
             localStorage.setItem(LocalStorageKeys.AUTH_TOKEN, value.headers.get(LocalStorageKeys.AUTH_TOKEN));
             this.authService.userData = value.body.data;
             this.navigateToDashboard();
+            if (value.body.data.isVerified) {
+              this.navigateToDashboard();
+            } else {
+              this.alert.type = AlertType.DANGER;
+              this.alert.msg = 'Failed to confirm OTP';
+              this.alert.show();
+            }
+          } else {
+            this.alert.type = AlertType.DANGER;
+            this.alert.msg = value.body.message;
+            this.alert.show();
           }
         },
-        (error: any) => console.log(error)
+        (error: HttpErrorResponse) => {
+          this.alert.msg = Utils.handleError(error);
+          this.alert.type = AlertType.DANGER;
+          this.alert.show();
+          console.log(error);
+        }
       );
   }
 }

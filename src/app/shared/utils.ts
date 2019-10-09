@@ -3,6 +3,8 @@ import { ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ApiEndpointKeys } from './api-endpoint-keys.enum';
 import { AlertMsg, AlertType } from '../services/alert-msg.service';
+import { HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { ErrorResponse } from '../models/Response/error-response';
 
 export class Utils {
   static apiBaseUrl = 'http://sfs-digital.herokuapp.com/';
@@ -38,5 +40,27 @@ export class Utils {
       message: 'Something went wrong...please retry.',
       type: AlertType.DANGER
     };
+  }
+
+  static setRequestHeader(authToken?: string): HttpHeaders {
+    if (authToken) {
+      return new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: authToken
+      });
+    } else {
+      return new HttpHeaders({
+        'Content-Type': 'application/json'
+      });
+    }
+  }
+
+  static handleError(errorRes: HttpErrorResponse): string {
+    let error = '';
+    const errorMsgs: ErrorResponse = errorRes.error;
+    for (const errorMsg of errorMsgs.data) {
+      error += errorMsg.message + '\n';
+    }
+    return error;
   }
 }

@@ -27,17 +27,17 @@ export class AlertMsgService {
 
   configure(): void {
     this._subject.subscribe((message) => this._msg = message);
-    this._subject.pipe(debounceTime(5000)).subscribe(() => this._msg = null);
+    this._subject.pipe(debounceTime(5000)).subscribe(() => this.msg = null);
   }
 
   // show(alert: AlertMsg): void {
   //   this._subject.next(alert);
   // }
 
-  show(alertType: AlertType, message: string): void {
-    this._type = alertType;
-    this._msg = message;
-    this._subject.next(message);
+  show(): void {
+    if (this.msg && this.type) {
+      this._subject.next(this.msg);
+    }
   }
 
   public get alertMsg(): AlertMsg {
