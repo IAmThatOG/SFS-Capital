@@ -12,6 +12,7 @@ import { ServiceModule } from './services/service.module';
 import { ConfirmOtpModule } from './confirm-otp/confirm-otp.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { DashboardSideNavComponent } from './dashboard-side-nav/dashboard-side-nav.component';
 // import { CompareValidatorDirective } from './shared/compare-validator.directive';
 
 const routes: Routes = [
@@ -32,7 +33,8 @@ const routes: Routes = [
     LoginModule,
     ServiceModule,
     ConfirmOtpModule,
-    DashboardModule
+    DashboardModule,
+    
   ],
   exports: [
     RouterModule

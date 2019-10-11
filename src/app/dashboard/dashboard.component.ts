@@ -7,6 +7,8 @@ import { FixedIncomeResponse } from '../models/Response/fixed-income-response';
 import { Utils } from '../shared/utils';
 import { AlertMsgService, AlertType } from '../services/alert-msg.service';
 import { Router } from '@angular/router';
+import { UserData } from '../models/user-data';
+import { LocalStorageKeys } from '../shared/local-storage-keys.enum';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,6 +18,7 @@ import { Router } from '@angular/router';
 export class DashboardComponent implements OnInit {
 
   private _fixedIncome: FixedIncome;
+  private _user: UserData;
 
   constructor(
     private _authService: AuthService,
@@ -29,6 +32,7 @@ export class DashboardComponent implements OnInit {
       .subscribe(
         (value: HttpResponse<FixedIncomeResponse>) => {
           if (value.body.status) {
+            this._user = JSON.parse(localStorage.getItem(LocalStorageKeys.USER_DATA)) as UserData;
             this._fixedIncome = value.body.data || {
               initialSubscriptionValue: 0,
               totalAvailableBalance: 0,
@@ -54,6 +58,14 @@ export class DashboardComponent implements OnInit {
       );
   }
 
+  public get user(): UserData {
+    return this._user;
+  }
+
+  public set user(v: UserData) {
+    this._user = v;
+  }
+  
   private navigateToLogin(): void {
     this._authService.logout();
     this.router.navigate(['login']);
