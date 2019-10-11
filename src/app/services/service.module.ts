@@ -2,6 +2,7 @@ import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './auth.service';
 import { Utils } from '../shared/utils';
+import { InvestmentService } from './investment.service';
 
 @NgModule({
   declarations: [],
@@ -9,7 +10,8 @@ import { Utils } from '../shared/utils';
     CommonModule
   ],
   providers: [
-    AuthService
+    AuthService,
+    InvestmentService
   ]
 })
 export class ServiceModule {

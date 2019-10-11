@@ -39,9 +39,9 @@ export class CreateAccountComponent implements OnInit {
   private phoneNumberRegex = '^[+][0-9]*$';
 
   constructor(private router: Router,
-    private formBuilder: FormBuilder,
-    private authService: AuthService,
-    private _alert: AlertMsgService) { }
+              private formBuilder: FormBuilder,
+              private authService: AuthService,
+              private _alert: AlertMsgService) { }
 
   ngOnInit() {
     this.signupForm = this.formBuilder.group(
@@ -121,9 +121,10 @@ export class CreateAccountComponent implements OnInit {
           if (result && result.status) {
             // redirect to otp page
             const otp: string = result.data.otpRef;
-            console.log(`OTP => ${otp}`);
             sessionStorage.setItem(LocalStorageKeys.OTP_REF, otp);
             sessionStorage.setItem(LocalStorageKeys.PHONE_NUMBER, this.phoneNumber.value);
+            this.alert.type = AlertType.SUCCESS;
+            this.alert.msg = 'Please confirm the OTP code sent to your email';
             this.navigateToConfirmOtp();
           } else {
             this.alert.msg = result.message;

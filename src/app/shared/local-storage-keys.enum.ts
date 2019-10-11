@@ -3,5 +3,5 @@ export enum LocalStorageKeys {
   PHONE_NUMBER = 'phoneNumber',
   USER_DATA = 'user',
   AUTH_TOKEN = 'Token',
-  ALERT_MSG = 'alertMsg'
+  ALERT_MSG = 'alertMsg',
 }

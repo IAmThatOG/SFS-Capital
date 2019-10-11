@@ -20,7 +20,6 @@ export class AlertMsgService {
 
   private _subject = new Subject<string>();
   private _msg: string;
-  private _alertMsg: AlertMsg;
   private _type: string
 
   constructor() { }
@@ -38,15 +37,6 @@ export class AlertMsgService {
     if (this.msg && this.type) {
       this._subject.next(this.msg);
     }
-  }
-
-  public get alertMsg(): AlertMsg {
-    return this._alertMsg;
-  }
-
-
-  public set alertMsg(v: AlertMsg) {
-    this._alertMsg = v;
   }
 
 

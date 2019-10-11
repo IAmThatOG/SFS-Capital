@@ -1,17 +1,15 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { SignUpRequest } from '../models/Request/sign-up-request';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { SignUpResponse } from '../models/Response/sign-up-response';
 import { AuthResponse } from '../models/Response/confirm-otp-response';
 import { ConfirmOtpRequest } from '../models/Request/confirm-otp-request';
 import { Utils } from '../shared/utils';
-import { ApiEndpointKeys } from '../shared/api-endpoint-keys.enum';
 import { UserData } from '../models/user-data';
 import { LoginRequest } from '../models/Request/login-request';
 import { ResendOtpRequest } from '../models/Request/resend-otp-request';
-import { ResendOtpResponse } from '../models/Response/resend-otp-response';
-import { utils } from 'protractor';
+import { LocalStorageKeys } from '../shared/local-storage-keys.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -22,11 +20,8 @@ export class AuthService {
 
   private _userData: UserData;
 
-  private headers = new HttpHeaders({
-    'Content-Type': 'application/json'
-  });
-
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {
+  }
 
   public get userData(): UserData {
     return this._userData;
@@ -69,14 +64,19 @@ export class AuthService {
     );
   }
 
-  resendOtp(request: ResendOtpRequest, authToken: string): Observable<HttpResponse<SignUpResponse>> {
+  resendOtp(request: ResendOtpRequest): Observable<HttpResponse<SignUpResponse>> {
     return this.httpClient.post<SignUpResponse>(
       `${Utils.apiBaseUrl}api/Customer/resendtoken`,
       request,
       {
-        headers: Utils.setRequestHeader(authToken),
+        headers: Utils.setRequestHeader(Utils.getAuthToken()),
         observe: 'response'
       }
     );
+  }
+
+  logout(): void {
+    localStorage.clear();
+    sessionStorage.clear();
   }
 }

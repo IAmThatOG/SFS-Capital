@@ -73,8 +73,7 @@ export class LoginComponent implements OnInit {
       email,
       phoneNumber
     };
-    const authToken = localStorage.getItem(LocalStorageKeys.AUTH_TOKEN);
-    this._authService.resendOtp(resendOtpReq, authToken)
+    this._authService.resendOtp(resendOtpReq)
       .subscribe(
         (value: HttpResponse<SignUpResponse>) => {
           if (value.body && value.body.data.otpRef) {
@@ -100,10 +99,9 @@ export class LoginComponent implements OnInit {
         (value: HttpResponse<AuthResponse>) => {
           if (value.body.data) {
             // redirect to dashboard
-            console.log(value);
+            console.log(`login ${value}`);
             localStorage.setItem(LocalStorageKeys.USER_DATA, JSON.stringify(value.body.data));
             localStorage.setItem(LocalStorageKeys.AUTH_TOKEN, value.headers.get(LocalStorageKeys.AUTH_TOKEN));
-            this._authService.userData = value.body.data;
             if (value.body.data.isVerified) {
               this.navigateToDashboard();
             } else {
@@ -119,7 +117,6 @@ export class LoginComponent implements OnInit {
           this.alert.msg = Utils.handleError(errorRes);
           this.alert.type = AlertType.DANGER;
           this.alert.show();
-          console.log(errorRes);
           // this.alert.show(AlertType.DANGER, Utils.httpErrorMsg);
         }
       );

@@ -63,7 +63,6 @@ export class ConfirmOtpComponent implements OnInit {
             // redirect to dashboard
             localStorage.setItem(LocalStorageKeys.USER_DATA, JSON.stringify(value.body.data));
             localStorage.setItem(LocalStorageKeys.AUTH_TOKEN, value.headers.get(LocalStorageKeys.AUTH_TOKEN));
-            this.authService.userData = value.body.data;
             this.navigateToDashboard();
             if (value.body.data.isVerified) {
               this.navigateToDashboard();

@@ -65,6 +65,12 @@
 
     <div class="dashboard_body_content">
 
+      <div class="row">
+        <div class="col-12">
+          <ngb-alert *ngIf="alert.msg" [type]="alert.type" (close)="alert.msg = null">{{alert.msg}}</ngb-alert>
+        </div>
+      </div>
+
       <div class="welcome_n_button">
 
         <div class="welcome">
@@ -85,54 +91,45 @@
         <div class="first_card">
           <div class="card_title">
             <span>
-              Total Invested
+              Total Available Balance
             </span>
           </div>
           <div class="amount_invested">
             <span>
-              ₦ 35, 001,500.00
+              ₦ {{fixedIncome.totalAvailableBalance | number:'1.2-2'}}
             </span>
           </div>
           <div class="plans">
-            <span>
-              from 15 investment plans
-            </span>
           </div>
         </div>
 
         <div class="second_card">
           <div class="card_title">
             <span>
-              Total Invested
+              Ledger Balance
             </span>
           </div>
           <div class="amount_invested">
             <span>
-              ₦ 35, 001,500.00
+              ₦ {{fixedIncome.ledgerBalance | number:'1.2-2'}}
             </span>
           </div>
           <div class="plans">
-            <span>
-              from 15 investment plans
-            </span>
           </div>
         </div>
 
         <div class="third_card">
           <div class="card_title">
             <span>
-              Total Invested
+              Total Interest Earned
             </span>
           </div>
           <div class="amount_invested">
             <span>
-              ₦ 35, 001,500.00
+              ₦ {{fixedIncome.totalInterestEarned | number:'1.2-2'}}
             </span>
           </div>
           <div class="plans">
-            <span>
-              from 15 investment plans
-            </span>
           </div>
         </div>
       </div>
@@ -141,7 +138,7 @@
 
         <div class="title">
           <h5>
-            Latest Investments
+            Investment calculator
           </h5>
         </div>
 
@@ -153,7 +150,7 @@
 
                 <div class="img_btn_link">
                   <a href="#">
-                    Fixed Plan
+                      Choose Fixed Plan
                   </a>
                 </div>
 
@@ -224,7 +221,7 @@
                                   </div> -->
             </div>
           </div>
-          <div class="inv_chart">
+          <!-- <div class="inv_chart">
             <div class="chart_title">
               <p>
                 Investment chart
@@ -259,7 +256,7 @@
               </script>
             </div>
 
-          </div>
+          </div> -->
         </div>
 
       </div>

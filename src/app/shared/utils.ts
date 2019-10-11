@@ -5,6 +5,7 @@ import { ApiEndpointKeys } from './api-endpoint-keys.enum';
 import { AlertMsg, AlertType } from '../services/alert-msg.service';
 import { HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { ErrorResponse } from '../models/Response/error-response';
+import { LocalStorageKeys } from './local-storage-keys.enum';
 
 export class Utils {
   static apiBaseUrl = 'http://sfs-digital.herokuapp.com/';
@@ -62,5 +63,9 @@ export class Utils {
       error += errorMsg.message + '\n';
     }
     return error;
+  }
+
+  static getAuthToken(): string {
+    return `Bearer ${localStorage.getItem(LocalStorageKeys.AUTH_TOKEN)}`;
   }
 }
